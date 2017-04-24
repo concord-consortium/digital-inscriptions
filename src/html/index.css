@@ -1,0 +1,38 @@
+body {
+  background-color: hsla(50,20%,90%,1);
+  font-family: helvetica, sans-serif;
+  color: hsla(100,10%,25%,1);
+  margin: 2em;
+}
+
+.component {
+  background-color: hsla(50,20%,95%,1);
+  /*width: 400px;*/
+  padding: 1em;
+  margin: 2em;
+  border-radius: 0.2em;
+  box-shadow: 1px 1px 4px hsla(0,0%,50%,0.5);
+}
+
+
+.menu-bar {
+    font-family: 'Arial', 'Helvetica', 'sans-serif';
+    width: 100%;
+    background-color: #105262;
+    padding: 8px 0px 8px;
+    color: #fff;
+    height: 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-content: flex-end;
+    align-items: flex-end;
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    -webkit-justify-content: space-between;
+    -webkit-align-content: flex-end;
+    -webkit-align-items: flex-end;
+}

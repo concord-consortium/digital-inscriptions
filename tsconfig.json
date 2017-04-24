@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es5",
+    "strictNullChecks": true,
+    "jsx": "react",
+    "experimentalDecorators": true,
+    "allowJs": true
+  },
+  "include": [
+    "./src/js/missing-typings.d.ts",
+    "./src/js/main.tsx"
+  ]
+}
