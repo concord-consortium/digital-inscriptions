@@ -1,7 +1,7 @@
 {
   "name": "digital-inscriptions",
   "version": "1.0.0",
-  "description": "A collaborative CMP lerning space",
+  "description": "A collaborative CMP learning space",
   "main": "index.js",
   "repository": {
     "type": "git",
