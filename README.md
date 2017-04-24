@@ -1,6 +1,6 @@
 # digitial-inscriptsions.
 
-A collaborative CMP learning space
+A collaborative CMP learning space.
 
 
 ## Working with this project:
