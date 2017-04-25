@@ -11,8 +11,5 @@
     "experimentalDecorators": true,
     "allowJs": true
   },
-  "include": [
-    "./src/js/missing-typings.d.ts",
-    "./src/js/main.tsx"
-  ]
+  "include": [ "src/**/*"]
 }

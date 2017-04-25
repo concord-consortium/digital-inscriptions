@@ -219,7 +219,4 @@ export class FirebaseImp {
       listener.setState(dataV);
     }
   }
-
-
-
 }
