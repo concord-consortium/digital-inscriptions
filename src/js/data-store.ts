@@ -1,7 +1,9 @@
 import { observable, computed, autorun, action} from "mobx";
 import { v1 as uuid } from "uuid";
-import { FirebaseImp } from "./firebase-imp";
+import { firebaseImp } from "./firebase-imp";
 import { WindowManager, WindowMap, WindowProps, DragType} from "./window-manager";
+import { router, Router} from "./router";
+
 const _ = require("lodash");
 
 enum AppStatus { Starting, Loading, Ready }
@@ -11,9 +13,9 @@ interface AppState {
 }
 
 class DataStore {
-  @observable firebaseImp: FirebaseImp
   @observable appStatus: AppStatus
   windowManager: WindowManager = new WindowManager();
+  router: Router = router;
   constructor() {
     this.registerFirebase();
     this.appStatus = AppStatus.Starting
@@ -21,10 +23,9 @@ class DataStore {
   }
 
   registerFirebase() {
-    this.firebaseImp = new FirebaseImp();
-    this.firebaseImp.addListener(this);
+    firebaseImp.addListener(this);
     this.setAppStatus(AppStatus.Loading);
-    this.firebaseImp.initFirebase( ()=> {
+    firebaseImp.initFirebase( ()=> {
       this.setAppStatus(AppStatus.Ready);
     });
   }
@@ -45,22 +46,18 @@ class DataStore {
   saveToPath(key:string, value:any) {
     const obj:any = {};
     obj[key] = value;
-    this.firebaseImp.saveToFirebase(obj);
+    firebaseImp.saveToFirebase(obj);
   }
 
   save(obj:any){
-    this.firebaseImp.saveToFirebase(obj);
+    firebaseImp.saveToFirebase(obj);
   }
 
   unregisterFirebase() {
-    this.firebaseImp.removeListener(this);
+    firebaseImp.removeListener(this);
     console.log("firebase unregistered");
     return true;
   }
-
-
 }
 
-const dataStore = new DataStore();
-
-export { dataStore };
+export const dataStore = new DataStore();

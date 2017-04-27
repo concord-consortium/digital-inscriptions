@@ -42,7 +42,7 @@ interface FireBaseConfig {
   [key:string]: string
 }
 
-export class FirebaseImp {
+class FirebaseImp {
   _session:string
   _activity:string
   sessionID: string
@@ -118,7 +118,6 @@ export class FirebaseImp {
 
   setDataRef() {
     if(firebase.database()) {
-      this.dataRef = firebase.database().ref(this.session);
       this.rebindFirebaseHandlers();
       this.setupPresence();
     }
@@ -170,25 +169,23 @@ export class FirebaseImp {
 
   rebindFirebaseHandlers () {
     this.log("registering listeners");
-    const ref = this.dataRef;
-    // Unbind old listening:
-    if(ref) {
+    if(this.dataRef) {
       try {
-        ref.off();
+        this.dataRef.off();
       }
       catch(e) {
         this.log("couldn't disable previous data handler");
       }
     }
-
+    this.dataRef = firebase.database().ref(this.session);
     const setData = this.loadDataFromFirebase.bind(this);
     const log = this.log.bind(this);
-    ref.on("value", setData);
+    this.dataRef.on("value", setData);
 
     // TBD: Best way to listen to events with better granularity.
-    ref.on("child_changed", function(data:any){ log("child_changed:" + data);});
-    ref.on("child_added", function(data:any)  { log("child added: " + data); });
-    ref.on("child_removed", function(data:any){ log("child removed: " + data);});
+    this.dataRef.on("child_changed", function(data:any){ log("child_changed:" + data);});
+    this.dataRef.on("child_added", function(data:any)  { log("child added: " + data); });
+    this.dataRef.on("child_removed", function(data:any){ log("child removed: " + data);});
   }
 
   addListener(listener:FirebaseLinstener) {
@@ -220,3 +217,5 @@ export class FirebaseImp {
     }
   }
 }
+
+export const firebaseImp = new FirebaseImp();
