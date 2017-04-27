@@ -74,8 +74,19 @@ body {
   bottom: 0px;
   cursor: se-resize;
 }
+
 .window-selected {
   box-shadow: 0 1px 20px 0 rgba(0,0,0,0.25);
+}
+
+.iFrameHider {
+  position: absolute;
+  background-color: white;
+  opacity: 0.0;
+  top: 25px;
+  left: 0px;
+  right: 20px;
+  bottom: 20px;
 }
 
 .titlebar {
@@ -107,3 +118,4 @@ body {
   background-image: url(img/bg-drid-grey.png);
   user-select: none;
 }
+

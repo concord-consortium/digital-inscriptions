@@ -1,7 +1,8 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { DragType, WindowProps } from "../window-manager";
+import { DragType, WindowProps, WindowManager } from "../window-manager";
 import { dataStore } from "../data-store";
+
 
 export interface WindowViewProps {
   window: WindowProps
@@ -52,20 +53,22 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
     const iframeProps = {
       width: w.width - 10,
       height: w.height - 25,
+      pointerEvents: "all",
       url: w.url || undefined
     };
     const selected = (dataStore.windowManager.selectedWindow == this.props.window)
     const classNames = selected ? "window selected" : "window"
     const titlebarClassNames = selected ? "titlebar selected" : "titlebar"
+    if(selected) {
+      iframeProps.pointerEvents="none";
+    }
     return(
         <div className={classNames}
             style={style}>
           <div
             className={titlebarClassNames}
             onMouseDown={this.mouseDownWindow.bind(this)}
-            onMouseUp={this.mouseUp.bind(this)}
-            onMouseEnter={ () => dataStore.windowManager.selectedWindow = this.props.window }
-            onMouseLeave={ () => dataStore.windowManager.selectedWindow = null } >
+            onMouseUp={this.mouseUp.bind(this)} >
               <span>{this.props.title}</span>
               {
                 selected ?
@@ -76,8 +79,8 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
                   ""
               }
           </div>
-          <iframe width={iframeProps.width} height={iframeProps.height} src={iframeProps.url} ></iframe>
-
+          <iframe width={iframeProps.width} height={iframeProps.height} src={iframeProps.url}></iframe>
+          {selected ? <div className="iFrameHider"/> : "" }
           <div
             className="rightGrow"
             onMouseDown={this.growRightDown.bind(this)}
