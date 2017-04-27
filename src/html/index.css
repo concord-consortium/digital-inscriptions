@@ -42,6 +42,8 @@ body {
     border-top-left-radius: 6px;
     background-color: white;
     user-select: none;
+    min-height: 30px;
+    min-width: 100px;
 }
 
 .window iframe {
