@@ -1,4 +1,8 @@
 /* global module:true, require:true __dirname */
+
+// TODO: Maybe later support deployment environments.
+// Look at `webpack.EnvironmentPlugin`
+
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
 const webpack = require("webpack");
