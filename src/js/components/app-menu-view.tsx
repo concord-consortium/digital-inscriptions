@@ -2,6 +2,8 @@ import * as React from "react";
 import { observer } from "mobx-react";
 import { drawtoolHelper } from "../drawtool-helper";
 import { DrawtoolButtonView } from "./drawtool-button-view";
+import "../../css/app-menu.styl"
+
 export interface AppMenuViewProps {
   height?:number
 }

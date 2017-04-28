@@ -2,7 +2,7 @@ import * as React from "react";
 import { observer } from "mobx-react";
 import { DragType, WindowProps, WindowManager } from "../window-manager";
 import { dataStore } from "../data-store";
-
+import "../../css/window.styl";
 
 export interface WindowViewProps {
   window: WindowProps

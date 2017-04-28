@@ -29,6 +29,8 @@ module.exports = {
       },
       // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
       { test: /\.tsx?$/, loader: "awesome-typescript-loader", options: {configFileName: "./tsconfig.json"} },
+      { test: /\.styl$/i, loaders: ['style-loader', 'css-loader', 'stylus-loader']},
+      { test: /\.css$/, loaders: ['style-loader', 'css-loader']}
     ]
   },
 

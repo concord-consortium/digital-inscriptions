@@ -1,0 +1,68 @@
+.window
+  position: relative;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.25);
+  border-radius: 6px;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
+  background-color: white;
+  user-select: none;
+  min-height: 30px;
+  min-width: 100px;
+
+  iframe
+    border: none;
+
+  .rightGrow
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    width: 4px;
+    cursor: ew-resize;
+
+  .bottomGrow
+    position: absolute;
+    right: 0px;
+    left: 0px;
+    height: 4px;
+    bottom: 0px;
+    cursor: ns-resize;
+
+  .bottomRightGrow
+    position: absolute;
+    right: 0px;
+    width: 10px;
+    height: 10px;
+    bottom: 0px;
+    cursor: se-resize;
+
+.window-selected
+  box-shadow: 0 1px 20px 0 rgba(0,0,0,0.25);
+
+.iFrameHider
+  position: absolute;
+  background-color: white;
+  opacity: 0.0;
+  top: 25px;
+  left: 0px;
+  right: 20px;
+  bottom: 20px;
+
+.titlebar
+  position: relative;
+  right: 0px;
+  top: 0px;
+  left: 0px;
+  height: 25px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #72bfca;
+  color: white;
+  border-radius: 6px 6px 0px 0px;
+  user-select: none;
+  padding: 0px 1em;
+  .selected
+    background-color: #177991;
+
