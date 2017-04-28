@@ -57,8 +57,8 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
       url: w.url || undefined
     };
     const selected = (dataStore.windowManager.selectedWindow == this.props.window)
+    const someWindowSelected = (dataStore.windowManager.selectedWindow  != null)
     const classNames = selected ? "window selected" : "window"
-    const titlebarClassNames = selected ? "titlebar selected" : "titlebar"
     if(selected) {
       iframeProps.pointerEvents="none";
     }
@@ -66,7 +66,7 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
         <div className={classNames}
             style={style}>
           <div
-            className={titlebarClassNames}
+            className="titlebar"
             onMouseDown={this.mouseDownWindow.bind(this)}
             onMouseUp={this.mouseUp.bind(this)} >
               <span>{this.props.title}</span>
@@ -80,7 +80,7 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
               }
           </div>
           <iframe width={iframeProps.width} height={iframeProps.height} src={iframeProps.url}></iframe>
-          {selected ? <div className="iFrameHider"/> : "" }
+          {someWindowSelected ? <div className="iFrameHider"/> : "" }
           <div
             className="rightGrow"
             onMouseDown={this.growRightDown.bind(this)}

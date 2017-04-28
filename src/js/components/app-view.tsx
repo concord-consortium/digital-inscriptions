@@ -56,7 +56,7 @@ export class AppView extends React.Component<AppViewProps, AppViewState> {
           onDragOver={(e:any) => e.preventDefault()}
           className="container">
           <AppMenuView/>
-          { _.map(windows, (w:WindowProps, i:number) => <WindowView key={w.id} title={`${i}`} window={w}/> ) }
+          { _.map(windows, (w:WindowProps, i:number) => <WindowView key={w.id} title={`${w.title}`} window={w}/> ) }
         </div>
       </MuiThemeProvider>
     );

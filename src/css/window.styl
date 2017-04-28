@@ -36,8 +36,11 @@
     bottom: 0px;
     cursor: se-resize;
 
-.window-selected
-  box-shadow: 0 1px 20px 0 rgba(0,0,0,0.25);
+  &.selected
+    box-shadow: 0 1px 20px 0 rgba(0,0,0,0.25);
+    z-index: 10;
+    .titlebar
+      background-color: #177991;
 
 .iFrameHider
   position: absolute;
@@ -63,6 +66,3 @@
   border-radius: 6px 6px 0px 0px;
   user-select: none;
   padding: 0px 1em;
-  .selected
-    background-color: #177991;
-
