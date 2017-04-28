@@ -100,11 +100,12 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     background-color: #72bfca;
     color: white;
     border-radius: 6px 6px 0px 0px;
     user-select: none;
+    padding: 0px 1em;
 }
 
 .titlebar.selected {
@@ -121,3 +122,18 @@ body {
   user-select: none;
 }
 
+.button {
+  border-radius: 0.25em;
+  background-color: hsla(192,52%,52%,1);
+  padding: 2px 1em;
+}
+.button:hover {
+  background-color: hsla(192,52%,62%,1);
+}
+.button
+  a {
+    text-decoration: none;
+    color:hsla(192,72%,100%,1);
+    padding: 0.2em;
+    font-size: 0.9em;
+}

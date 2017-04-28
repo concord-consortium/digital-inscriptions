@@ -1,6 +1,7 @@
 import * as React from "react";
-import { observer } from 'mobx-react';
-
+import { observer } from "mobx-react";
+import { drawtoolHelper } from "../drawtool-helper";
+import { DrawtoolButtonView } from "./drawtool-button-view";
 export interface AppMenuViewProps {
   height?:number
 }
@@ -22,6 +23,7 @@ export class AppMenuView extends React.Component<AppMenuViewProps, AppMenuViewSt
     return(
         <div className="menu-bar">
           <span> Digital Inscriptions Collaboration Space </span>
+          <DrawtoolButtonView />
         </div>
     );
   }
