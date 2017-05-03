@@ -1,5 +1,6 @@
 import { v1 as uuid } from "uuid";
 import { observable, computed, action, ObservableMap} from "mobx";
+import { drawtoolHelper } from "./drawtool-helper";
 
 const _ = require("lodash");
 
@@ -47,7 +48,6 @@ export class WindowManager {
   }
 
   @action moveRelative(x:number, y:number) {
-    // debugger;
     if(this.selectedWindow) {
       const dx = x - this.moveOffsetX;
       const dy = y - this.moveOffsetY;
@@ -93,8 +93,9 @@ export class WindowManager {
   }
 
   addWindowFromDrag(url:string) {
+    const [loadUrl, saveUrl] = drawtoolHelper.makeShared(url);
     const props:WindowProps = {
-      url: url,
+      url: loadUrl,
       index: this.lastIndex + 1,
       id: uuid(),
       width: 400,
@@ -102,6 +103,15 @@ export class WindowManager {
       top: 50,
       left: 50,
       title: "untitled"
+    }
+    // this probably shouldn't or won't work:
+    if(loadUrl != saveUrl) {
+      const rewriteWindowProps = function() {
+        props.url = saveUrl
+        this.windowMap.set(props.id, props);
+        this.selectedWindow = props;
+      }.bind(this);
+      setTimeout(rewriteWindowProps, 3000);
     }
     this.addWindow(props);
   }
