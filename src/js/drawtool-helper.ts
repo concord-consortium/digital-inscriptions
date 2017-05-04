@@ -1,7 +1,7 @@
 import { v1 as uuid } from "uuid";
 import * as QueryString from "query-string";
 
-const DrawToolUrl = "http://localhost:8080/dist/examples/firebase.html";
+const DrawToolUrl = "http://cc-draw.surge.sh/";
 const firebaseKeyParam = "firebaseKey";
 const newKeyParam = "newKey"
 
