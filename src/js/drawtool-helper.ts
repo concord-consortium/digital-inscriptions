@@ -1,7 +1,7 @@
 import { v1 as uuid } from "uuid";
 import * as QueryString from "query-string";
 
-const DrawToolUrl = "http://cc-draw.surge.sh/";
+const DrawToolUrl = "http://codraw.concord.org/";
 const firebaseKeyParam = "firebaseKey";
 const newKeyParam = "newKey"
 
