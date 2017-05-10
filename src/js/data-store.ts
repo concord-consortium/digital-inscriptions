@@ -39,8 +39,12 @@ class DataStore {
   }
 
   saveWindowMap() {
-    const data = this.windowManager.windowMap.toJS();
-    this.saveToPath('windowMap', data);
+    // Only send DB changes that originate from the UI:
+    if(this.windowManager.dirty) {
+      this.windowManager.dirty=false;
+      const data = this.windowManager.windowMap.toJS();
+      this.saveToPath('windowMap', data);
+    }
   }
 
   saveToPath(key:string, value:any) {

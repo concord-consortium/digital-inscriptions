@@ -25,6 +25,7 @@ export interface WindowMap {
 export class WindowManager {
   @observable windowMap: ObservableMap<WindowProps>;
   @observable selectedWindow: WindowProps | null;
+  @observable dirty: boolean
   moveOffsetX: number
   moveOffsetY: number
   dragType: DragType;
@@ -32,6 +33,7 @@ export class WindowManager {
   constructor() {
     this.windowMap = new ObservableMap<WindowProps>({});
     this.selectedWindow = null;
+    this.dirty = true;
   }
 
   setMoveOffset(x:number, y:number, dragType:DragType) {
@@ -51,6 +53,7 @@ export class WindowManager {
     if(this.selectedWindow) {
       const dx = x - this.moveOffsetX;
       const dy = y - this.moveOffsetY;
+      this.dirty = true;
       switch(this.dragType) {
         case DragType.Position:
           this.selectedWindow.top = dy;
@@ -83,6 +86,7 @@ export class WindowManager {
       this.selectedWindow = null;
       console.log(`deselected window.`);
     }
+    this.dirty = false;
   }
 
   drag(dx:number, dy:number) {
@@ -104,7 +108,7 @@ export class WindowManager {
       left: 50,
       title: "untitled"
     }
-    // this probably shouldn't or won't work:
+    // TODO: Something better than setTimeout.
     if(loadUrl != saveUrl) {
       const rewriteWindowProps = function() {
         props.url = saveUrl
@@ -113,6 +117,7 @@ export class WindowManager {
       }.bind(this);
       setTimeout(rewriteWindowProps, 3000);
     }
+    this.dirty = true;
     this.addWindow(props);
   }
 
