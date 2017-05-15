@@ -98,8 +98,10 @@ class FirebaseImp {
   }
 
   reqAuth() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithRedirect(provider)
+    // To re-enable google authentication:
+    // var provider = new firebase.auth.GoogleAuthProvider();
+    // firebase.auth().signInWithRedirect(provider)
+    firebase.auth().signInAnonymously()
     .then(this.finishAuth.bind(this))
     .catch(this.failAuth.bind(this));
   }
