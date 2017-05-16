@@ -32,7 +32,11 @@ export class AppView extends React.Component<AppViewProps, AppViewState> {
   };
 
   up(e: React.MouseEvent<HTMLDivElement>) {
-    dataStore.windowManager.windowSelected(null);
+    dataStore.windowManager.mouseUp();
+  };
+
+  down(e: React.MouseEvent<HTMLDivElement>) {
+    dataStore.windowManager.mouseDown();
   };
 
   onDrop(e: any) {
@@ -51,6 +55,7 @@ export class AppView extends React.Component<AppViewProps, AppViewState> {
       <MuiThemeProvider>
         <div
           onMouseUp={this.up.bind(this)}
+          onMouseDown={this.down.bind(this)}
           onMouseMove={this.move.bind(this)}
           onDrop={this.onDrop.bind(this)}
           onDragOver={(e:any) => e.preventDefault()}

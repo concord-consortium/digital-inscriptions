@@ -1,6 +1,7 @@
 import * as React from "react";
 import { observer } from "mobx-react";
 import { DragType, WindowProps, WindowManager } from "../window-manager";
+import { drawtoolHelper } from "../drawtool-helper";
 import { dataStore } from "../data-store";
 import "../../css/window.styl";
 
@@ -21,22 +22,26 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
 
   mouseDownWindow(e: React.MouseEvent<HTMLDivElement>) {
     dataStore.windowManager.windowSelected(this.props.window, e.clientX, e.clientY, DragType.Position);
+    e.stopPropagation();
   };
 
   growRightDown(e: React.MouseEvent<HTMLDivElement>) {
     dataStore.windowManager.windowSelected(this.props.window, e.clientX, e.clientY, DragType.GrowRight);
+    e.stopPropagation();
   };
 
   growBottomDown(e: React.MouseEvent<HTMLDivElement>) {
     dataStore.windowManager.windowSelected(this.props.window, e.clientX, e.clientY, DragType.GrowDown);
+    e.stopPropagation();
   };
 
   growBothDown(e: React.MouseEvent<HTMLDivElement>) {
     dataStore.windowManager.windowSelected(this.props.window, e.clientX, e.clientY, DragType.GrowBoth);
+    e.stopPropagation();
   };
 
   mouseUp(e: React.MouseEvent<HTMLDivElement>) {
-    dataStore.windowManager.windowSelected(null, 0, 0, DragType.None);
+    dataStore.windowManager.mouseUp();
   };
 
 
@@ -57,9 +62,10 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
       url: w.url || undefined
     };
     const selected = (dataStore.windowManager.selectedWindow == this.props.window)
+    const dragging = (dataStore.windowManager.draggingWindow == this.props.window)
     const someWindowSelected = (dataStore.windowManager.selectedWindow  != null)
     const classNames = selected ? "window selected" : "window"
-    if(selected) {
+    if(dragging) {
       iframeProps.pointerEvents="none";
     }
     return(
@@ -71,12 +77,10 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
             onMouseUp={this.mouseUp.bind(this)} >
               <span>{this.props.title}</span>
               {
-                selected ?
-                  <span
-                    onClick={ () => dataStore.windowManager.removeWindow(this.props.window) }
-                    className="closer">✖</span>
-                :
-                  ""
+                <span
+                  onClick={ () => dataStore.windowManager.removeWindow(this.props.window) }
+                  className="closer">✖</span>
+
               }
           </div>
           <iframe width={iframeProps.width} height={iframeProps.height} src={iframeProps.url}></iframe>

@@ -1,7 +1,9 @@
 import * as React from "react";
 import { observer } from "mobx-react";
 import { drawtoolHelper } from "../drawtool-helper";
+import { dataStore } from "../data-store";
 import { ButtonView } from "./button-view";
+
 import "../../css/app-menu.styl"
 
 export interface AppMenuViewProps {
@@ -23,9 +25,15 @@ export class AppMenuView extends React.Component<AppMenuViewProps, AppMenuViewSt
 
   render() {
     return(
-        <div className="menu-bar">
+        <div className="menu-bar" onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation() }>
           <span> Digital Inscriptions Collaboration Space </span>
-          <ButtonView action={drawtoolHelper.openNewDrawtool} text="new drawing"/>
+          {
+            (dataStore.windowManager.selectedWindow != null)
+            ? <ButtonView action={drawtoolHelper.openPrivateCopy.bind(drawtoolHelper)} text="Make private copy"/>
+            : <ButtonView action={() => {} } disabled={true} text="Make private copy"/>
+          }
+          <ButtonView action={drawtoolHelper.openNewPrivateDrawtool} text="New private drawing"/>
+          <ButtonView action={drawtoolHelper.openNewSharedDrawtool} text="New shared drawing"/>
         </div>
     );
   }

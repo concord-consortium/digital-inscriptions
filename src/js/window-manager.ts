@@ -23,12 +23,13 @@ export interface WindowMap {
 }
 
 export class WindowManager {
-  @observable windowMap: ObservableMap<WindowProps>;
-  @observable selectedWindow: WindowProps | null;
+  @observable windowMap: ObservableMap<WindowProps>
+  @observable selectedWindow: WindowProps | null
+  @observable dragType: DragType
   @observable dirty: boolean
   moveOffsetX: number
   moveOffsetY: number
-  dragType: DragType;
+
 
   constructor() {
     this.windowMap = new ObservableMap<WindowProps>({});
@@ -47,6 +48,15 @@ export class WindowManager {
     if(this.selectedWindow) {
       this.selectedWindow = this.windowMap.get(this.selectedWindow.id) || null;
     }
+  }
+
+  @action mouseUp() {
+    this.dragType = DragType.None;
+  }
+
+  @action mouseDown() {
+    this.selectedWindow = null;
+    this.dragType = DragType.None;
   }
 
   @action moveRelative(x:number, y:number) {
@@ -127,8 +137,11 @@ export class WindowManager {
   }
 
   removeWindow(window:WindowProps) {
-    this.windowMap.delete(window.id);
-    this.selectedWindow = null;
+    if(confirm("Delete this window FOREVER??")) {
+      this.windowMap.delete(window.id);
+      this.selectedWindow = null;
+      this.dirty = true;
+    }
   }
 
   resortWindows(last:WindowProps){
@@ -149,5 +162,13 @@ export class WindowManager {
   @computed get windows() {
     console.log("Computation for windows being run");
     return _.sortBy(this.windowMap.values(), 'index');
+  }
+
+  @computed get draggingWindow() {
+
+    if(this.dragType !== DragType.None) {
+      return this.selectedWindow;
+    }
+    return null;
   }
 }
