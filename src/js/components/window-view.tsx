@@ -7,17 +7,42 @@ import "../../css/window.styl";
 
 export interface WindowViewProps {
   window: WindowProps
-  title: string
 }
 
-export interface WindowViewState {}
+export interface WindowViewState {
+  isEditing: boolean
+  editText: string
+}
 
 @observer
 export class WindowView extends React.Component<WindowViewProps, WindowViewState> {
   public state:WindowViewState
-
+  input: HTMLInputElement;
   constructor(props:WindowViewProps){
     super(props);
+    this.state = {
+      isEditing: false,
+      editText: this.props.window.title
+    }
+  }
+
+  doubleClickTitle() {
+    this.setState({isEditing: true, editText: this.props.window.title});
+    this.input.focus();
+  }
+
+  keyUp(e:React.KeyboardEvent<HTMLInputElement>) {
+    if(e.keyCode ==9 || e.keyCode == 13) {
+      this.setState({isEditing: false})
+    }
+  }
+
+  changeTitle() {
+    this.props.window.title = this.input.value;
+  }
+
+  doneEditing() {
+    this.setState({isEditing:false});
   }
 
   mouseDownWindow(e: React.MouseEvent<HTMLDivElement>) {
@@ -64,7 +89,9 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
     const selected = (dataStore.windowManager.selectedWindow == this.props.window)
     const dragging = (dataStore.windowManager.draggingWindow == this.props.window)
     const someWindowSelected = (dataStore.windowManager.selectedWindow  != null)
+    const title = (this.props.window.title.length > 0) ? this.props.window.title : "untitled"
     const classNames = selected ? "window selected" : "window"
+    const editing = this.state.isEditing;
     if(dragging) {
       iframeProps.pointerEvents="none";
     }
@@ -75,13 +102,24 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
             className="titlebar"
             onMouseDown={this.mouseDownWindow.bind(this)}
             onMouseUp={this.mouseUp.bind(this)} >
-              <span>{this.props.title}</span>
-              {
-                <span
-                  onClick={ () => dataStore.windowManager.removeWindow(this.props.window) }
-                  className="closer">✖</span>
-
-              }
+            {
+              editing
+              ?
+                <input
+                  type='text'
+                  value={ this.props.window.title }
+                  ref={ (input) =>  this.input = input }
+                  onChange={ this.changeTitle.bind(this) }
+                  onBlur={ this.doneEditing.bind(this) }
+                  onKeyUp={ this.keyUp.bind(this) }
+                  onMouseDown={ (e:React.MouseEvent<HTMLInputElement>)=> e.stopPropagation() }
+                  />
+              :
+                 <span onDoubleClick={this.doubleClickTitle.bind(this)} >{title}</span>
+            }
+              <span
+                onClick={ () => dataStore.windowManager.removeWindow(this.props.window) }
+                className="closer">✖</span>
           </div>
           <iframe width={iframeProps.width} height={iframeProps.height} src={iframeProps.url}></iframe>
           {someWindowSelected ? <div className="iFrameHider"/> : "" }
