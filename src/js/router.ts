@@ -21,7 +21,6 @@ export class Router {
   printHash() {
     const keys = _.keys(this.params);
     const values = _.map(keys, (k:string) => `${k}=${this.params[k]}`);
-    console.log(`hashChanged ${values}`);
     if(this.params.session) {
       firebaseImp.session=this.params.session;
     }

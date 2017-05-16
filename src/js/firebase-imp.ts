@@ -213,7 +213,6 @@ class FirebaseImp {
 
   loadDataFromFirebase(data:FirebaseData) {
     const dataV = data.val();
-    console.log(dataV);
     for(let listener of this.listeners) {
       listener.setState(dataV);
     }
