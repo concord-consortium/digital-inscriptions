@@ -38,7 +38,6 @@ export class DrawtoolHelper {
     const windowManager = dataStore.windowManager;
     const props = {
       id: id,
-      index: windowManager.lastIndex + 1,
       top: 100,
       left: 100,
       width: 500,

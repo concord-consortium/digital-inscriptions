@@ -9,7 +9,6 @@ export enum DragType { GrowRight, GrowDown, GrowBoth, Position, None }
 
 export interface WindowProps {
   id: string
-  index: number
   top: number
   left: number
   width: number
@@ -87,14 +86,11 @@ export class WindowManager {
   windowSelected(window:WindowProps|null, x:number=0, y:number=0, dragType:DragType=DragType.None) {
     if(window) {
       this.selectedWindow = this.windowMap.get(window.id) || null
-      this.resortWindows(window);
       this.setMoveOffset(x,y,dragType);
-      console.log(`selected window #${window.id}`);
     }
     else {
       this.setMoveOffset(0, 0, DragType.None);
       this.selectedWindow = null;
-      console.log(`deselected window.`);
     }
     this.dirty = false;
   }
@@ -110,7 +106,6 @@ export class WindowManager {
     const [loadUrl, saveUrl] = drawtoolHelper.makeShared(url);
     const props:WindowProps = {
       url: loadUrl,
-      index: this.lastIndex + 1,
       id: uuid(),
       width: 400,
       height: 300,
@@ -144,24 +139,9 @@ export class WindowManager {
     }
   }
 
-  resortWindows(last:WindowProps){
-    const without:WindowProps[] = _.filter(this.windows, (w:WindowProps) => w.id != last.id)
-    without.push(last);
-    _.each(without, (w:WindowProps, i:number) => {
-      const win = this.windowMap.get(w.id);
-      if (win) {
-        win.index= i;
-      }
-    });
-  }
-
-  @computed get lastIndex() {
-    return this.windows.length-1;
-  }
 
   @computed get windows() {
-    console.log("Computation for windows being run");
-    return _.sortBy(this.windowMap.values(), 'index');
+    return this.windowMap.values();
   }
 
   @computed get draggingWindow() {
