@@ -183,11 +183,6 @@ class FirebaseImp {
     const setData = this.loadDataFromFirebase.bind(this);
     const log = this.log.bind(this);
     this.dataRef.on("value", setData);
-
-    // TBD: Best way to listen to events with better granularity.
-    // this.dataRef.on("child_changed", function(data:any){ log("child changed:" + data);});
-    // this.dataRef.on("child_added", function(data:any)  { log("child added: " + data); });
-    // this.dataRef.on("child_removed", function(data:any){ log("child removed: " + data);});
   }
 
   addListener(listener:FirebaseLinstener) {
