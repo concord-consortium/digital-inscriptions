@@ -26,7 +26,7 @@ export class AppMenuView extends React.Component<AppMenuViewProps, AppMenuViewSt
   render() {
     return(
         <div className="menu-bar" onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation() }>
-          <span> Digital Inscriptions Collaboration Space </span>
+          <span>Collaboration Space</span>
           {
             (dataStore.windowManager.selectedWindow != null)
             ? <ButtonView action={drawtoolHelper.openPrivateCopy.bind(drawtoolHelper)} text="Make private copy"/>
