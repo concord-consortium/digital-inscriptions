@@ -4,7 +4,7 @@ import { DragType, WindowProps, WindowManager } from "../window-manager";
 import { drawtoolHelper } from "../drawtool-helper";
 import { dataStore } from "../data-store";
 import "../../css/window.styl";
-
+import { shareClient } from "../sharing-support";
 export interface WindowViewProps {
   window: WindowProps
 }
@@ -24,6 +24,11 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
       isEditing: false,
       editText: this.props.window.title
     }
+  }
+
+  componentDidMount() {
+    // Connect the sharing service so that sharinator can work.
+    shareClient.connectChild(this.refs['iframe'] as HTMLIFrameElement );
   }
 
   doubleClickTitle() {
@@ -121,7 +126,7 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
                 onClick={ () => dataStore.windowManager.removeWindow(this.props.window) }
                 className="closer">✖</span>
           </div>
-          <iframe width={iframeProps.width} height={iframeProps.height} src={iframeProps.url}></iframe>
+          <iframe ref={'iframe'} width={iframeProps.width} height={iframeProps.height} src={iframeProps.url}></iframe>
           {someWindowSelected ? <div className="iFrameHider"/> : "" }
           <div
             className="rightGrow"
