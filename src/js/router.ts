@@ -11,16 +11,19 @@ export class Router {
   constructor(){
     this.parseHash();
     window.addEventListener("hashchange", this.parseHash.bind(this));
-    autorun(this.printHash.bind(this));
+    autorun(this.setSessionVars.bind(this));
   }
 
   parseHash() {
     this.params = QueryString.parse(location.hash);
   }
 
-  printHash() {
+  setSessionVars() {
     const keys = _.keys(this.params);
     const values = _.map(keys, (k:string) => `${k}=${this.params[k]}`);
+    if(this.params.sessionTemplate) {
+      firebaseImp.sessionTemplate=this.params.sessionTemplate;
+    }
     if(this.params.session) {
       firebaseImp.session=this.params.session;
     }
