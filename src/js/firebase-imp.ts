@@ -33,6 +33,7 @@ interface FirebaseRef {
   off(event:string):void
   off():void
   on(event:string, callback:Function):void
+  once(event:string, callback:Function):void
   onDisconnect():FirebaseDisconnectSerivce
   remove():void
   update(data:any):void
@@ -43,6 +44,7 @@ interface FireBaseConfig {
 }
 
 class FirebaseImp {
+  sessionTemplate:string
   _session:string
   _activity:string
   sessionID: string
@@ -121,7 +123,6 @@ class FirebaseImp {
   setDataRef() {
     if(firebase.database()) {
       this.rebindFirebaseHandlers();
-      this.setupPresence();
     }
   }
 
@@ -182,7 +183,39 @@ class FirebaseImp {
     this.dataRef = firebase.database().ref(this.session);
     const setData = this.loadDataFromFirebase.bind(this);
     const log = this.log.bind(this);
-    this.dataRef.on("value", setData);
+
+    // check the initial session data
+    this.dataRef.once("value", (sessionData:FirebaseData) => {
+      const val = sessionData.val()
+      const haveFinalData = (finalData:FirebaseData) => {
+        setData(finalData)
+        this.dataRef.on("value", setData);
+        this.setupPresence();
+      }
+
+      // if there is no data and there is a session template use the data from that
+      if (!val && this.sessionTemplate) {
+        const templateRef = firebase.database().ref(this.sessionTemplate);
+        templateRef.once("value", (templateData:FirebaseData) => {
+          const val = templateData.val()
+          if (val) {
+            delete val.presense
+            /*
+            if (val.windowMap) {
+              Object.keys(val.windowMap).forEach((key) => {
+                val.windowMap[key].url += "&makeCopy=1"
+              })
+            }
+            */
+          }
+          this.saveToFirebase(val);
+          haveFinalData(templateData);
+        });
+      }
+      else {
+        haveFinalData(sessionData)
+      }
+    });
   }
 
   addListener(listener:FirebaseLinstener) {
@@ -207,7 +240,7 @@ class FirebaseImp {
   }
 
   loadDataFromFirebase(data:FirebaseData) {
-    const dataV = data.val();
+    const dataV = data.val() || {};
     for(let listener of this.listeners) {
       listener.setState(dataV);
     }
