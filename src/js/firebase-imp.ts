@@ -55,13 +55,11 @@ class FirebaseImp {
   connectionStatus: FirebaseRef
   dataRef: FirebaseRef
   userRef: FirebaseRef
-  sessionExists:boolean
 
   constructor() {
     this._session = `${DEFAULT_SESSION}_${DEFAULT_VERSION_STRING.replace(/\./g, "_")}`;
     this.activity = DEFAULT_ACTIVITY;
     this.version  = DEFAULT_VERSION_STRING;
-    this.sessionExists = false;
 
     this.config = {
       apiKey: "AIzaSyBo36Ni0UPABpIHu6VtBPMSJyb8RVPAYl4",
