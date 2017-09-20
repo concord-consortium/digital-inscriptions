@@ -1,7 +1,6 @@
 
 import { SharingRelay, SharableApp, PublishResponse, Context, Text} from "cc-sharing";
 declare const require:(name:string) => any;
-const iFramePhone = require("iframe-phone");
 const uuid = require("uuid");
 
 // This will NOT work if we keep adding iframes I think ... TBD:
