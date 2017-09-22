@@ -37,7 +37,9 @@ const GetShareClient = function() {
   }
 
   shareClient.addPublicationListener({newPublication: reportResults});
-  shareClient.initializeAsTop(context);
+  if(window.parent===window){
+    shareClient.initializeAsTop(context);
+  }
   return shareClient;
 };
 
