@@ -38,7 +38,7 @@ export class WindowManager {
     this.dirty = true;
 
     shareClient.phone.addListener("openInCollabSpace", (params) => {
-      this.addWindowFromSharinator(params.application)
+      this.addWindowFromSharinator(params.title, params.application)
     })
   }
 
@@ -112,15 +112,19 @@ export class WindowManager {
     return Math.round(min + (Math.random() * (max - min)))
   }
 
-  addWindowFromSharinator(application:LaunchApplication) {
+  addWindowFromSharinator(title:string, application:LaunchApplication) {
+    const a = document.createElement("a")
+    a.href = application.launchUrl
+    a.hash = `${a.hash}${a.hash.length > 1 ? '&' : ''}sharing_clone=${uuid()}`
+
     const props:WindowProps = {
-      url: application.launchUrl,
+      url: a.toString(),
       id: uuid(),
       width: 400,
       height: 300,
       top: this.randInRange(50,100),
       left: this.randInRange(50,100),
-      title: application.name
+      title: title
     }
     this.addWindow(props);
   }
