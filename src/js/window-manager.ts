@@ -1,6 +1,8 @@
 import { v1 as uuid } from "uuid";
 import { observable, computed, action, ObservableMap} from "mobx";
 import { drawtoolHelper } from "./drawtool-helper";
+import { shareClient } from "./sharing-support";
+import { LaunchApplication } from "cc-sharing"
 
 const _ = require("lodash");
 
@@ -34,6 +36,10 @@ export class WindowManager {
     this.windowMap = new ObservableMap<WindowProps>({});
     this.selectedWindow = null;
     this.dirty = true;
+
+    shareClient.phone.addListener("openInCollabSpace", (params) => {
+      this.addWindowFromSharinator(params.application)
+    })
   }
 
   setMoveOffset(x:number, y:number, dragType:DragType) {
@@ -102,6 +108,23 @@ export class WindowManager {
     else {}
   }
 
+  randInRange(min:number, max:number) {
+    return Math.round(min + (Math.random() * (max - min)))
+  }
+
+  addWindowFromSharinator(application:LaunchApplication) {
+    const props:WindowProps = {
+      url: application.launchUrl,
+      id: uuid(),
+      width: 400,
+      height: 300,
+      top: this.randInRange(50,100),
+      left: this.randInRange(50,100),
+      title: application.name
+    }
+    this.addWindow(props);
+  }
+
   addWindowFromDrag(url:string) {
     const [loadUrl, saveUrl] = drawtoolHelper.makeShared(url);
     const props:WindowProps = {
@@ -109,8 +132,8 @@ export class WindowManager {
       id: uuid(),
       width: 400,
       height: 300,
-      top: 50,
-      left: 50,
+      top: this.randInRange(50,100),
+      left: this.randInRange(50,100),
       title: "untitled"
     }
     // TODO: Something better than setTimeout.
@@ -138,6 +161,8 @@ export class WindowManager {
       this.dirty = true;
     }
   }
+
+
 
 
   @computed get windows() {

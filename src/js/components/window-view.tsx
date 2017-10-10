@@ -28,7 +28,7 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
 
   componentDidMount() {
     // Connect the sharing service so that sharinator can work.
-    shareClient.connectChild(this.refs['iframe'] as HTMLIFrameElement );
+    shareClient.connectChild(this.refs['iframe'] as HTMLIFrameElement, this.props.window.id);
   }
 
   doubleClickTitle() {
