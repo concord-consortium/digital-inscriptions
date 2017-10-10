@@ -17,6 +17,7 @@ export interface WindowProps {
   height: number
   url: string
   title: string
+  order: number
 }
 
 export interface WindowMap {
@@ -88,9 +89,9 @@ export class WindowManager {
     }
   }
 
-
   windowSelected(window:WindowProps|null, x:number=0, y:number=0, dragType:DragType=DragType.None) {
     if(window) {
+      this.topWindow = window
       this.selectedWindow = this.windowMap.get(window.id) || null
       this.setMoveOffset(x,y,dragType);
     }
@@ -124,7 +125,8 @@ export class WindowManager {
       height: 300,
       top: this.randInRange(50,100),
       left: this.randInRange(50,100),
-      title: title
+      title: title,
+      order: 0
     }
     this.addWindow(props);
   }
@@ -138,15 +140,16 @@ export class WindowManager {
       height: 300,
       top: this.randInRange(50,100),
       left: this.randInRange(50,100),
-      title: "untitled"
+      title: "untitled",
+      order: 0
     }
     // TODO: Something better than setTimeout.
     if(loadUrl != saveUrl) {
-      const rewriteWindowProps = function() {
+      const rewriteWindowProps = () => {
         props.url = saveUrl
         this.windowMap.set(props.id, props);
         this.selectedWindow = props;
-      }.bind(this);
+      };
       setTimeout(rewriteWindowProps, 3000);
     }
     this.dirty = true;
@@ -154,6 +157,8 @@ export class WindowManager {
   }
 
   addWindow(props:WindowProps) {
+    const topWindow = this.topWindow
+    props.order = topWindow ? topWindow.order + 1 : 0
     this.windowMap.set(props.id, props);
     this.selectedWindow = props;
   }
@@ -166,8 +171,30 @@ export class WindowManager {
     }
   }
 
+  @computed get topWindow() {
+    let highestWindow:WindowProps|null = null
+    this.windowMap.values().forEach((window) => {
+      if (highestWindow) {
+        if (window.order > highestWindow.order) {
+          highestWindow = window
+        }
+      }
+      else {
+        highestWindow = window
+      }
+    })
 
+    return highestWindow
+  }
 
+  set topWindow(topWindow:WindowProps|null) {
+    if (topWindow) {
+      const currentTopWindow = this.topWindow
+      if (currentTopWindow && (currentTopWindow !== topWindow)) {
+        topWindow.order = currentTopWindow.order + 1
+      }
+    }
+  }
 
   @computed get windows() {
     return this.windowMap.values();

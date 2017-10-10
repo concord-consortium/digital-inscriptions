@@ -50,7 +50,6 @@ export class AppView extends React.Component<AppViewProps, AppViewState> {
 
   render() {
     const windows = dataStore.windowManager.windows;
-    const window  = dataStore.windowManager.selectedWindow;
     return(
       <MuiThemeProvider>
         <div
