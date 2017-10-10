@@ -43,7 +43,8 @@ export class DrawtoolHelper {
       width: 500,
       height: 400,
       url: url,
-      title: "shared drawing"
+      title: "shared drawing",
+      order: 0
     }
     windowManager.addWindow(props);
   }

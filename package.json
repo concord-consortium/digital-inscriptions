@@ -16,7 +16,7 @@
   "author": "npaessel@concord.org",
   "license": "MIT",
   "dependencies": {
-    "cc-sharing": "^1.0.9",
+    "cc-sharing": "^1.0.12",
     "copy-webpack-plugin": "^4.0.1",
     "dateformat": "^2.0.0",
     "firebase": "^3.7.0",

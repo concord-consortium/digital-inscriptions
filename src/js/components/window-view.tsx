@@ -28,7 +28,7 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
 
   componentDidMount() {
     // Connect the sharing service so that sharinator can work.
-    shareClient.connectChild(this.refs['iframe'] as HTMLIFrameElement );
+    shareClient.connectChild(this.refs['iframe'] as HTMLIFrameElement, this.props.window.id);
   }
 
   doubleClickTitle() {
@@ -84,6 +84,7 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
       left: `${w.left}px`,
       width: `${w.width}px`,
       height: `${w.height}px`,
+      zIndex: w.order
     }
     const iframeProps = {
       width: w.width - 10,
@@ -91,11 +92,11 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
       pointerEvents: "all",
       url: w.url || undefined
     };
-    const selected = (dataStore.windowManager.selectedWindow == this.props.window)
+    const topWindow = (dataStore.windowManager.topWindow == this.props.window)
     const dragging = (dataStore.windowManager.draggingWindow == this.props.window)
     const someWindowSelected = (dataStore.windowManager.selectedWindow  != null)
     const title = (this.props.window.title.length > 0) ? this.props.window.title : "untitled"
-    const classNames = selected ? "window selected" : "window"
+    const classNames = topWindow ? "window selected" : "window"
     const editing = this.state.isEditing;
     if(dragging) {
       iframeProps.pointerEvents="none";
@@ -110,7 +111,7 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
             {
               editing
               ?
-                <input
+              <input
                   type='text'
                   value={ this.props.window.title }
                   ref={ (input) =>  this.input = input }
@@ -120,14 +121,15 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
                   onMouseDown={ (e:React.MouseEvent<HTMLInputElement>)=> e.stopPropagation() }
                   />
               :
-                 <span onDoubleClick={this.doubleClickTitle.bind(this)} >{title}</span>
+              <span onDoubleClick={this.doubleClickTitle.bind(this)} >{title}</span>
             }
               <span
                 onClick={ () => dataStore.windowManager.removeWindow(this.props.window) }
                 className="closer">✖</span>
           </div>
-          <iframe ref={'iframe'} width={iframeProps.width} height={iframeProps.height} src={iframeProps.url}></iframe>
-          {someWindowSelected ? <div className="iFrameHider"/> : "" }
+          <iframe ref={'iframe'} key={this.props.window.id} width={iframeProps.width} height={iframeProps.height} src={iframeProps.url}></iframe>
+          {someWindowSelected ? <div className="iFrameHider"/> : null }
+          {!topWindow ? <div className="iFrameHider" onMouseDownCapture={this.mouseDownWindow.bind(this)}/> : null }
           <div
             className="rightGrow"
             onMouseDown={this.growRightDown.bind(this)}
