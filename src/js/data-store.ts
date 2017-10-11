@@ -19,7 +19,9 @@ class DataStore {
   constructor() {
     this.registerFirebase();
     this.appStatus = AppStatus.Starting
-    autorun(this.saveWindowMap.bind(this));
+    firebaseImp.onLoad(() => {
+      autorun(this.saveWindowMap.bind(this))
+    })
   }
 
   registerFirebase() {

@@ -55,6 +55,8 @@ class FirebaseImp {
   connectionStatus: FirebaseRef
   dataRef: FirebaseRef
   userRef: FirebaseRef
+  initCallbacks: Function[]
+  loadedCallbacks: Function[]
 
   constructor() {
     this._session = `${DEFAULT_SESSION}_${DEFAULT_VERSION_STRING.replace(/\./g, "_")}`;
@@ -69,6 +71,8 @@ class FirebaseImp {
       storageBucket: "digital-inscriptions.appspot.com",
       messagingSenderId: "205530147288"
     };
+    this.initCallbacks = [];
+    this.loadedCallbacks = [];
     this.listeners = [];
     this.sessionID = localStorage.getItem(LOCAL_SESSION_KEY) || uuid();
     localStorage.setItem(LOCAL_SESSION_KEY, this.sessionID);
@@ -97,6 +101,15 @@ class FirebaseImp {
         reqAuth();
       }
     });
+    this.initCallbacks.forEach((callback) => callback());
+  }
+
+  onInit(callback:Function) {
+    this.initCallbacks.push(callback);
+  }
+
+  onLoad(callback:Function) {
+    this.loadedCallbacks.push(callback);
   }
 
   reqAuth() {
@@ -191,6 +204,7 @@ class FirebaseImp {
         setData(finalData)
         this.dataRef.on("value", setData);
         this.setupPresence();
+        this.loadedCallbacks.forEach((callback) => callback());
       }
 
       // if there is no data and there is a session template use the data from that

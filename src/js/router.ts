@@ -11,7 +11,8 @@ export class Router {
   constructor(){
     this.parseHash();
     window.addEventListener("hashchange", this.parseHash.bind(this));
-    autorun(this.setSessionVars.bind(this));
+
+    firebaseImp.onInit(() => autorun(this.setSessionVars.bind(this)));
   }
 
   parseHash() {
