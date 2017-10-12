@@ -28,14 +28,14 @@ const GetShareClient = function() {
     application: {
       type: CollabSpace,
       launchUrl: window.location.href,
-      name: "Collaboration Space (demo)"
+      name: "Collaboration Space"
     },
     getDataFunc: (context:Context) => {
       const version  = uuid.v1();
       const filename:string = `thumbnails/${escapeFirebaseKey(context.offering)}/${escapeFirebaseKey(context.group)}/${escapeFirebaseKey(context.user)}/${escapeFirebaseKey(context.id)}/${version}.jpg`;
       return new Promise( (resolve, reject) => {
           resolve(
-            [{type: Text, dataUrl: "From the collaboration space"}]
+            [{type: Text, dataUrl: "Collaboration Space"}]
           )
       });
     }
