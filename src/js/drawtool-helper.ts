@@ -2,7 +2,7 @@ import { v1 as uuid } from "uuid";
 import * as QueryString from "query-string";
 import { dataStore } from "./data-store";
 
-const DrawToolUrl = "http://codraw.concord.org/";
+const DrawToolUrl = "//codraw.concord.org/";
 const firebaseKeyParam = "firebaseKey";
 const newKeyParam = "newKey"
 
@@ -26,7 +26,7 @@ export class DrawtoolHelper {
   };
 
   isDawTool(url:string) {
-    if(url.match(/http:\/\/codraw.concord.org/)) {
+    if(url.match(/codraw.concord.org/)) {
       return true;
     }
     return false;
