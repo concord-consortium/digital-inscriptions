@@ -32,8 +32,7 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
   }
 
   doubleClickTitle() {
-    this.setState({isEditing: true, editText: this.props.window.title});
-    this.input.focus();
+    this.setState({isEditing: true, editText: this.props.window.title}, () => this.input.focus());
   }
 
   keyUp(e:React.KeyboardEvent<HTMLInputElement>) {

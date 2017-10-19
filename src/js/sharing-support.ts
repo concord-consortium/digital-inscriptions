@@ -64,7 +64,7 @@ const GetShareClient = function() {
   shareClient.setPublishResponseFilter(filterPublishResponse)
 
   const reportResults = (publication: PublishResponse) => {
-    console.log(publication);
+    console.log("New publication", publication);
   }
 
   shareClient.addPublicationListener({newPublication: reportResults});
