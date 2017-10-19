@@ -94,7 +94,7 @@ class FirebaseImp {
     let auth = firebase.auth();
     auth.onAuthStateChanged(function(user:FirebaseUser) {
       if (user) {
-        log(user.displayName + " authenticated");
+        //log(user.displayName + " authenticated");
         finishAuth({result: {user: user}});
         callback();
       } else {
@@ -129,19 +129,19 @@ class FirebaseImp {
 
   finishAuth(result:{user:FirebaseUser}) {
     this.user = result.user;
-    this.setDataRef();
-    this.log("logged in");
+    //this.setDataRef("finishAuth");
+    //this.log("logged in");
   }
 
-  setDataRef() {
+  setDataRef(via:string) {
     if(firebase.database()) {
-      this.rebindFirebaseHandlers();
+      this.rebindFirebaseHandlers(via);
     }
   }
 
   set session(sessionName:string) {
     this._session = sessionName;
-    this.setDataRef();
+    this.setDataRef("set session");
   }
 
   get session() {
@@ -171,7 +171,7 @@ class FirebaseImp {
     const log = this.log.bind(this);
     const updateUserData = this.saveUserData.bind(this);
     this.connectionStatus.on("value", function(snapshot:any) {
-      log("online -- ");
+      //log("online -- ");
       updateUserData({
         oneline: true,
         start: new Date(),
@@ -183,17 +183,18 @@ class FirebaseImp {
     });
   }
 
-  rebindFirebaseHandlers () {
-    this.log("registering listeners");
+  rebindFirebaseHandlers (via:string) {
+    //this.log("registering listeners");
     if(this.dataRef) {
       try {
         this.dataRef.off();
       }
       catch(e) {
-        this.log("couldn't disable previous data handler");
+        //this.log("couldn't disable previous data handler");
       }
     }
     this.dataRef = firebase.database().ref(this.session);
+    console.log("DI dataRef via", via, this.dataRef.toString());
     const setData = this.loadDataFromFirebase.bind(this);
     const log = this.log.bind(this);
 
@@ -210,6 +211,7 @@ class FirebaseImp {
       // if there is no data and there is a session template use the data from that
       if (!val && this.sessionTemplate) {
         const templateRef = firebase.database().ref(this.sessionTemplate);
+        console.log("DI templateRef via", via, templateRef.toString())
         templateRef.once("value", (templateData:FirebaseData) => {
           const val = templateData.val()
           if (val) {

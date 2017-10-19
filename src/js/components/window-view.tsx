@@ -5,6 +5,41 @@ import { drawtoolHelper } from "../drawtool-helper";
 import { dataStore } from "../data-store";
 import "../../css/window.styl";
 import { shareClient } from "../sharing-support";
+
+export interface WindowViewIframeProps {
+  src: string | undefined
+  setIframeRef: (iframe:HTMLIFrameElement) => void
+}
+
+export interface WindowViewIframeState {
+}
+
+@observer
+export class WindowIframeView extends React.Component<WindowViewIframeProps, WindowViewIframeState> {
+
+  constructor (props:WindowViewIframeProps) {
+    super(props);
+    this.loaded = this.loaded.bind(this)
+    this.state = {}
+  }
+
+  refs: {
+    iframe: HTMLIFrameElement
+  }
+
+  loaded() {
+    this.props.setIframeRef(this.refs.iframe)
+  }
+
+  shouldComponentUpdate() {
+    return false
+  }
+
+  render() {
+    return <iframe ref='iframe' src={this.props.src} onLoad={this.loaded}></iframe>
+  }
+}
+
 export interface WindowViewProps {
   window: WindowProps
 }
@@ -18,22 +53,23 @@ export interface WindowViewState {
 export class WindowView extends React.Component<WindowViewProps, WindowViewState> {
   public state:WindowViewState
   input: HTMLInputElement;
+  iframe: HTMLIFrameElement;
   constructor(props:WindowViewProps){
     super(props);
+    this.setIframeRef = this.setIframeRef.bind(this)
     this.state = {
       isEditing: false,
       editText: this.props.window.title
     }
   }
 
-  componentDidMount() {
-    // Connect the sharing service so that sharinator can work.
-    shareClient.connectChild(this.refs['iframe'] as HTMLIFrameElement, this.props.window.id);
+  setIframeRef(iframe:HTMLIFrameElement) {
+    this.iframe = iframe
+    shareClient.connectChild(iframe, this.props.window.id);
   }
 
   doubleClickTitle() {
-    this.setState({isEditing: true, editText: this.props.window.title});
-    this.input.focus();
+    this.setState({isEditing: true, editText: this.props.window.title}, () => this.input.focus());
   }
 
   keyUp(e:React.KeyboardEvent<HTMLInputElement>) {
@@ -89,9 +125,9 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
     const iframeProps = {
       width: w.width - 10,
       height: w.height - 25,
-      pointerEvents: "all",
-      url: w.url || undefined
+      pointerEvents: "all"
     };
+    const iframeSrc = w.url || undefined
     const topWindow = (dataStore.windowManager.topWindow == this.props.window)
     const dragging = (dataStore.windowManager.draggingWindow == this.props.window)
     const someWindowSelected = (dataStore.windowManager.selectedWindow  != null)
@@ -103,7 +139,9 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
     }
     return(
         <div className={classNames}
-            style={style}>
+            style={style}
+            key={this.props.window.id}
+            >
           <div
             className="titlebar"
             onMouseDown={this.mouseDownWindow.bind(this)}
@@ -127,7 +165,9 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
                 onClick={ () => dataStore.windowManager.removeWindow(this.props.window) }
                 className="closer">✖</span>
           </div>
-          <iframe ref={'iframe'} key={this.props.window.id} width={iframeProps.width} height={iframeProps.height} src={iframeProps.url}></iframe>
+          <div className="iframeWrapper" style={iframeProps}>
+            <WindowIframeView src={iframeSrc} setIframeRef={this.setIframeRef}></WindowIframeView>
+          </div>
           {someWindowSelected ? <div className="iFrameHider"/> : null }
           {!topWindow ? <div className="iFrameHider" onMouseDownCapture={this.mouseDownWindow.bind(this)}/> : null }
           <div
