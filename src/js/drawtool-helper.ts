@@ -10,7 +10,7 @@ export class DrawtoolHelper {
   constructor(){}
 
   openNewPrivateDrawtool(){
-    const url =`${DrawToolUrl}?${firebaseKeyParam}=${uuid()}`;
+    const url =`${DrawToolUrl}#${firebaseKeyParam}=${uuid()}`;
     window.open(url, "_blank");
   }
 
@@ -25,7 +25,7 @@ export class DrawtoolHelper {
     }
   };
 
-  isDawTool(url:string) {
+  isDrawTool(url:string) {
     if(url.match(/codraw.concord.org/)) {
       return true;
     }
@@ -34,7 +34,7 @@ export class DrawtoolHelper {
 
   openNewSharedDrawtool(){
     const id = uuid();
-    const url =`${DrawToolUrl}?${firebaseKeyParam}=${id}`;
+    const url =`${DrawToolUrl}#${firebaseKeyParam}=${id}`;
     const windowManager = dataStore.windowManager;
     const props = {
       id: id,
@@ -50,7 +50,7 @@ export class DrawtoolHelper {
   }
 
   makeShared(url:string) {
-    let [address, query] = url.split("?");
+    let [address, query] = url.split("#");
     let loadUrl = url;
     let saveUrl = url;
     if(query && query.length > 0) {
@@ -59,11 +59,11 @@ export class DrawtoolHelper {
       if(firebaseKey) {
         params.newKey = uuid();
         query = QueryString.stringify(params);
-        loadUrl = [address, query].join("?");
+        loadUrl = [address, query].join("#");
         params.firebaseKey = params.newKey;
         delete params.newKey;
         query = QueryString.stringify(params);
-        saveUrl = [address, query].join("?");
+        saveUrl = [address, query].join("#");
       }
     }
     return [loadUrl, saveUrl];
