@@ -166,7 +166,7 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
                 className="closer">✖</span>
           </div>
           <div className="iframeWrapper" style={iframeProps}>
-            <WindowIframeView src={iframeSrc} setIframeRef={this.setIframeRef}></WindowIframeView>
+            <WindowIframeView key={this.props.window.id} src={iframeSrc} setIframeRef={this.setIframeRef}></WindowIframeView>
           </div>
           {someWindowSelected ? <div className="iFrameHider"/> : null }
           {!topWindow ? <div className="iFrameHider" onMouseDownCapture={this.mouseDownWindow.bind(this)}/> : null }
