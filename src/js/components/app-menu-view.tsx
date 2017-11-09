@@ -26,7 +26,7 @@ export class AppMenuView extends React.Component<AppMenuViewProps, AppMenuViewSt
   }
 
   render() {
-    const publish = () => shareClient.handlePublishMessage();
+    // const publish = () => shareClient.handlePublishMessage();
     return(
         <div className="menu-bar" onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation() }>
           <span>Collaboration Space</span>
@@ -35,7 +35,7 @@ export class AppMenuView extends React.Component<AppMenuViewProps, AppMenuViewSt
             ? <ButtonView action={drawtoolHelper.openPrivateCopy.bind(drawtoolHelper)} text="Make private copy"/>
             : <ButtonView action={() => {} } disabled={true} text="Make private copy"/>
           }
-          <ButtonView action={publish} text="share"/>
+          {/* <ButtonView action={publish} text="share"/> */}
           <ButtonView action={drawtoolHelper.openNewPrivateDrawtool} text="New private drawing"/>
           <ButtonView action={drawtoolHelper.openNewSharedDrawtool} text="New shared drawing"/>
         </div>

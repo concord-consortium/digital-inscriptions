@@ -33,6 +33,7 @@ interface FirebaseRef {
   off(event:string):void
   off():void
   on(event:string, callback:Function):void
+  once(event:string, callback:Function):void
   onDisconnect():FirebaseDisconnectSerivce
   remove():void
   update(data:any):void
@@ -43,6 +44,7 @@ interface FireBaseConfig {
 }
 
 class FirebaseImp {
+  sessionTemplate:string
   _session:string
   _activity:string
   sessionID: string
@@ -53,6 +55,8 @@ class FirebaseImp {
   connectionStatus: FirebaseRef
   dataRef: FirebaseRef
   userRef: FirebaseRef
+  initCallbacks: Function[]
+  loadedCallbacks: Function[]
 
   constructor() {
     this._session = `${DEFAULT_SESSION}_${DEFAULT_VERSION_STRING.replace(/\./g, "_")}`;
@@ -67,6 +71,8 @@ class FirebaseImp {
       storageBucket: "digital-inscriptions.appspot.com",
       messagingSenderId: "205530147288"
     };
+    this.initCallbacks = [];
+    this.loadedCallbacks = [];
     this.listeners = [];
     this.sessionID = localStorage.getItem(LOCAL_SESSION_KEY) || uuid();
     localStorage.setItem(LOCAL_SESSION_KEY, this.sessionID);
@@ -88,13 +94,22 @@ class FirebaseImp {
     let auth = firebase.auth();
     auth.onAuthStateChanged(function(user:FirebaseUser) {
       if (user) {
-        log(user.displayName + " authenticated");
+        //log(user.displayName + " authenticated");
         finishAuth({result: {user: user}});
         callback();
       } else {
         reqAuth();
       }
     });
+    this.initCallbacks.forEach((callback) => callback());
+  }
+
+  onInit(callback:Function) {
+    this.initCallbacks.push(callback);
+  }
+
+  onLoad(callback:Function) {
+    this.loadedCallbacks.push(callback);
   }
 
   reqAuth() {
@@ -114,20 +129,19 @@ class FirebaseImp {
 
   finishAuth(result:{user:FirebaseUser}) {
     this.user = result.user;
-    this.setDataRef();
-    this.log("logged in");
+    //this.setDataRef("finishAuth");
+    //this.log("logged in");
   }
 
-  setDataRef() {
+  setDataRef(via:string) {
     if(firebase.database()) {
-      this.rebindFirebaseHandlers();
-      this.setupPresence();
+      this.rebindFirebaseHandlers(via);
     }
   }
 
   set session(sessionName:string) {
     this._session = sessionName;
-    this.setDataRef();
+    this.setDataRef("set session");
   }
 
   get session() {
@@ -157,7 +171,7 @@ class FirebaseImp {
     const log = this.log.bind(this);
     const updateUserData = this.saveUserData.bind(this);
     this.connectionStatus.on("value", function(snapshot:any) {
-      log("online -- ");
+      //log("online -- ");
       updateUserData({
         oneline: true,
         start: new Date(),
@@ -169,20 +183,55 @@ class FirebaseImp {
     });
   }
 
-  rebindFirebaseHandlers () {
-    this.log("registering listeners");
+  rebindFirebaseHandlers (via:string) {
+    //this.log("registering listeners");
     if(this.dataRef) {
       try {
         this.dataRef.off();
       }
       catch(e) {
-        this.log("couldn't disable previous data handler");
+        //this.log("couldn't disable previous data handler");
       }
     }
     this.dataRef = firebase.database().ref(this.session);
+    console.log("DI dataRef via", via, this.dataRef.toString());
     const setData = this.loadDataFromFirebase.bind(this);
     const log = this.log.bind(this);
-    this.dataRef.on("value", setData);
+
+    // check the initial session data
+    this.dataRef.once("value", (sessionData:FirebaseData) => {
+      const val = sessionData.val()
+      const haveFinalData = (finalData:FirebaseData) => {
+        setData(finalData)
+        this.dataRef.on("value", setData);
+        this.setupPresence();
+        this.loadedCallbacks.forEach((callback) => callback());
+      }
+
+      // if there is no data and there is a session template use the data from that
+      if (!val && this.sessionTemplate) {
+        const templateRef = firebase.database().ref(this.sessionTemplate);
+        console.log("DI templateRef via", via, templateRef.toString())
+        templateRef.once("value", (templateData:FirebaseData) => {
+          const val = templateData.val()
+          if (val) {
+            delete val.presense
+            /*
+            if (val.windowMap) {
+              Object.keys(val.windowMap).forEach((key) => {
+                val.windowMap[key].url += "&makeCopy=1"
+              })
+            }
+            */
+          }
+          this.saveToFirebase(val);
+          haveFinalData(templateData);
+        });
+      }
+      else {
+        haveFinalData(sessionData)
+      }
+    });
   }
 
   addListener(listener:FirebaseLinstener) {
@@ -207,7 +256,7 @@ class FirebaseImp {
   }
 
   loadDataFromFirebase(data:FirebaseData) {
-    const dataV = data.val();
+    const dataV = data.val() || {};
     for(let listener of this.listeners) {
       listener.setState(dataV);
     }

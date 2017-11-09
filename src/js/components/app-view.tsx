@@ -1,6 +1,6 @@
 import * as React from "react";
 import {observer} from 'mobx-react';
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+//import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import DevTools from "mobx-react-devtools";
 import { AppMenuView } from "./app-menu-view";
 import { WindowView  } from "./window-view";
@@ -8,6 +8,7 @@ import { WindowView  } from "./window-view";
 import { WindowProps } from "../window-manager";
 import { dataStore } from "../data-store";
 
+const MuiThemeProvider = require("material-ui/styles/MuiThemeProvider").default;  // TODO: fix with proper import above when type defs work
 const _ = require("lodash");
 
 export interface AppViewProps {}
@@ -17,7 +18,6 @@ export interface AppViewState {
 
 @observer
 export class AppView extends React.Component<AppViewProps, AppViewState> {
-  public state:AppViewState
   constructor(props:AppViewProps){
     super(props);
     this.state = {
@@ -50,7 +50,6 @@ export class AppView extends React.Component<AppViewProps, AppViewState> {
 
   render() {
     const windows = dataStore.windowManager.windows;
-    const window  = dataStore.windowManager.selectedWindow;
     return(
       <MuiThemeProvider>
         <div

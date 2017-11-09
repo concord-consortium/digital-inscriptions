@@ -1,4 +1,4 @@
-import { observable, computed, autorun, action} from "mobx";
+import { observable, computed, autorun, action, toJS} from "mobx";
 import { v1 as uuid } from "uuid";
 import { firebaseImp } from "./firebase-imp";
 import { WindowManager, WindowMap, WindowProps, DragType} from "./window-manager";
@@ -19,7 +19,9 @@ class DataStore {
   constructor() {
     this.registerFirebase();
     this.appStatus = AppStatus.Starting
-    autorun(this.saveWindowMap.bind(this));
+    firebaseImp.onLoad(() => {
+      autorun(this.saveWindowMap.bind(this))
+    })
   }
 
   registerFirebase() {
@@ -32,8 +34,25 @@ class DataStore {
 
   setAppStatus(_new:AppStatus) {  this.appStatus = _new; }
 
+  ensureWindowOrder(windowMap:any) {
+    let needsOrder = false;
+    const windowKeys = Object.keys(windowMap);
+    Object.keys(windowMap).forEach((key) => {
+      const win = windowMap[key];
+      if (!win.hasOwnProperty("order")) {
+        needsOrder = true;
+      }
+    })
+    if (needsOrder) {
+      Object.keys(windowMap).forEach((key, order) => {
+        windowMap[key].order = order;
+      })
+    }
+  }
+
   setState(state:any) {
     if(state.windowMap){
+      this.ensureWindowOrder(state.windowMap)
       this.windowManager.setState(state.windowMap);
     }
   }
@@ -42,7 +61,7 @@ class DataStore {
     // Only send DB changes that originate from the UI:
     if(this.windowManager.dirty) {
       this.windowManager.dirty=false;
-      const data = this.windowManager.windowMap.toJS();
+      const data = toJS(this.windowManager.windowMap);
       this.saveToPath('windowMap', data);
     }
   }
@@ -59,7 +78,7 @@ class DataStore {
 
   unregisterFirebase() {
     firebaseImp.removeListener(this);
-    console.log("firebase unregistered");
+    //console.log("firebase unregistered");
     return true;
   }
 }
