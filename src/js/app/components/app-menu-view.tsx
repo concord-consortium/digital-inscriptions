@@ -6,7 +6,7 @@ import { ButtonView } from "./button-view";
 import { SharingRelay } from "cc-sharing";
 import { shareClient } from "../sharing-support";
 
-import "../../css/app-menu.styl"
+import "../../../css/app-menu.styl"
 
 export interface AppMenuViewProps {
   height?:number

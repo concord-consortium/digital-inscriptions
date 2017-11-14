@@ -7,7 +7,7 @@ export interface ButtonViewProps {
   disabled?: boolean
 }
 export interface ButtonViewState {}
-import "../../css/button.styl"
+import "../../../css/button.styl"
 
 @observer
 export class ButtonView extends React.Component<ButtonViewProps, ButtonViewState> {

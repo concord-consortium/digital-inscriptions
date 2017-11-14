@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import { DragType, WindowProps, WindowManager } from "../window-manager";
 import { drawtoolHelper } from "../drawtool-helper";
 import { dataStore } from "../data-store";
-import "../../css/window.styl";
+import "../../../css/window.styl";
 import { shareClient } from "../sharing-support";
 
 export interface WindowViewIframeProps {

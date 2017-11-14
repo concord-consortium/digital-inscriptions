@@ -9,7 +9,8 @@ const webpack = require("webpack");
 
 module.exports = {
   entry: {
-    app: ["./src/js/main.tsx"],
+    app: ["./src/js/app/app.tsx"],
+    prompts: ["./src/js/prompts/prompts.tsx"],
     vendor: ["lodash", "react", "react-dom", "mobx", "mobx-react", "material-ui"]
   },
 
