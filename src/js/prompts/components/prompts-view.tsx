@@ -69,7 +69,7 @@ export class EmbeddableView extends React.Component<EmbeddableProps, EmbeddableS
         </div>
       )
     }
-    return this.renderHintIcon()
+    return <div className="hidden-hint">{this.renderHintIcon()}</div>
   }
 
   render() {
