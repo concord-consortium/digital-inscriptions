@@ -123,7 +123,7 @@ export class WindowView extends React.Component<WindowViewProps, WindowViewState
       zIndex: w.order
     }
     const iframeProps = {
-      width: w.width - 10,
+      width: w.width,
       height: w.height - 25,
       pointerEvents: "all"
     };
