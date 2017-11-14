@@ -134,6 +134,7 @@ export class PromptsView extends React.Component<PromptsViewProps, PromptsViewSt
     this.handleDragOver = this.handleDragOver.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
+    this.renderPage = this.renderPage.bind(this)
 
     this.state = {
       updateActivity: null,
@@ -210,8 +211,9 @@ export class PromptsView extends React.Component<PromptsViewProps, PromptsViewSt
   }
 
   renderPage(page:ActivityPage) {
+    const style = {display: page === this.state.currentPage ? "block" : "none"}
     return (
-      <div className="page">
+      <div className="page" style={style}>
         {this.ifNotEmpty(page, "name", () => <h2>{page.name}</h2>)}
         {this.ifNotEmpty(page, "text", () => <p dangerouslySetInnerHTML={{__html: page.text}}></p>)}
         {this.ifNotEmpty(page, "embeddables", () => page.embeddables.map((embeddable, index) => <EmbeddableView key={index} embeddable={embeddable} ifNotEmpty={this.ifNotEmpty} />))}
@@ -228,7 +230,7 @@ export class PromptsView extends React.Component<PromptsViewProps, PromptsViewSt
     return (
       <div className="activity">
         {this.renderAccordian(activity)}
-        {this.renderPage(currentPage)}
+        {activity.pages.map(this.renderPage)}
       </div>
     )
   }
