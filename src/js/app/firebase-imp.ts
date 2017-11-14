@@ -1,4 +1,6 @@
 const firebase = require("firebase");
+import { firebaseConfig } from "../config"
+
 import { v1 as uuid } from "uuid";
 const DEFAULT_SESSION = "default";
 const DEFAULT_VERSION_STRING = "1.0.0";
@@ -39,10 +41,6 @@ interface FirebaseRef {
   update(data:any):void
 }
 
-interface FireBaseConfig {
-  [key:string]: string
-}
-
 class FirebaseImp {
   sessionTemplate:string
   _session:string
@@ -51,7 +49,6 @@ class FirebaseImp {
   user: FirebaseUser
   version: string
   listeners:FirebaseLinstener[]
-  config: FireBaseConfig
   connectionStatus: FirebaseRef
   dataRef: FirebaseRef
   userRef: FirebaseRef
@@ -63,14 +60,6 @@ class FirebaseImp {
     this.activity = DEFAULT_ACTIVITY;
     this.version  = DEFAULT_VERSION_STRING;
 
-    this.config = {
-      apiKey: "AIzaSyBo36Ni0UPABpIHu6VtBPMSJyb8RVPAYl4",
-      authDomain: "digital-inscriptions.firebaseapp.com",
-      databaseURL: "https://digital-inscriptions.firebaseio.com",
-      projectId: "digital-inscriptions",
-      storageBucket: "digital-inscriptions.appspot.com",
-      messagingSenderId: "205530147288"
-    };
     this.initCallbacks = [];
     this.loadedCallbacks = [];
     this.listeners = [];
@@ -87,7 +76,7 @@ class FirebaseImp {
   }
 
   initFirebase(callback:Function) {
-    firebase.initializeApp(this.config);
+    firebase.initializeApp(firebaseConfig);
     const finishAuth = this.finishAuth.bind(this);
     const reqAuth    = this.reqAuth.bind(this);
     const log        = this.log.bind(this);
