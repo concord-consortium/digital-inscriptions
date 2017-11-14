@@ -5,6 +5,13 @@ body
   margin: 0;
   padding: 0;
 
+.prompts
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
 .loading
   margin: 20px;
   padding-left: 22px;
@@ -39,19 +46,49 @@ body
 .activity
   margin: 10px 20px;
 
-  h1
-    font-size: 1.5em;
-  h2
-    font-size: 1.25em;
-
-  .hint-toggle
-    cursor: pointer;
-    font-size: 0.8em;
-    padding: 5px 10px;
-    margin-right: 10px;
-    background-color: #777;
+  .accordian
+    position: fixed;
+    top: 0;
+    width: 150px;
+    bottom: 0;
+    left: 0;
+    background-color: #3E90AC;
     color: #fff;
+    overflow: auto;
 
-  .hint
-    background-color: #ccc;
-    padding: 10px;
+    .accordian-item
+      cursor: pointer;
+      border: 2px solid #368194;
+      padding: 20px 0;
+      text-align: center;
+
+    .accordian-item-selected
+      background-color: #82C4D7;
+
+  .page
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 150px;
+    background-color: #82C4D7;
+    color: #fff;
+    padding: 10px 20px;
+    overflow: auto;
+
+    h1
+      font-size: 1.5em;
+    h2
+      font-size: 1.25em;
+
+    .hint-toggle
+      cursor: pointer;
+      font-size: 0.8em;
+      padding: 5px 10px;
+      margin-right: 10px;
+      background-color: #777;
+      color: #fff;
+
+    .hint
+      background-color: #ccc;
+      padding: 10px;

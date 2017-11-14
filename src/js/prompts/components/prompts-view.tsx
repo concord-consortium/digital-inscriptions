@@ -120,6 +120,7 @@ export interface PromptsViewState {
   activitiesList: ActivityListMap
   importError: string|null
   activityError: string|null
+  currentPage: ActivityPage|null
 }
 
 export class PromptsView extends React.Component<PromptsViewProps, PromptsViewState> {
@@ -140,7 +141,8 @@ export class PromptsView extends React.Component<PromptsViewProps, PromptsViewSt
       activity: null,
       activitiesList: {},
       importError: null,
-      activityError: null
+      activityError: null,
+      currentPage: null
     }
   }
 
@@ -190,15 +192,26 @@ export class PromptsView extends React.Component<PromptsViewProps, PromptsViewSt
           this.setState({activityError: `Unknown activity: ${params.activity}`})
         }
         else {
-          this.setState({activity})
+          this.setState({activity, currentPage: activity.pages[0]})
         }
       })
     }
   }
 
-  renderActivityPage(page:ActivityPage, index:number) {
+  renderAccordian(activity:Activity) {
     return (
-      <div key={index} className="activity-page">
+      <div className="accordian">
+        {activity.pages.map((page, index) => {
+          const className = `accordian-item ${page === this.state.currentPage ? "accordian-item-selected" : ""}`
+          return <div key={index} className={className} onClick={() => this.setState({currentPage: page})}>{page.name}</div>
+        })}
+      </div>
+    )
+  }
+
+  renderPage(page:ActivityPage) {
+    return (
+      <div className="page">
         {this.ifNotEmpty(page, "name", () => <h2>{page.name}</h2>)}
         {this.ifNotEmpty(page, "text", () => <p dangerouslySetInnerHTML={{__html: page.text}}></p>)}
         {this.ifNotEmpty(page, "embeddables", () => page.embeddables.map((embeddable, index) => <EmbeddableView key={index} embeddable={embeddable} ifNotEmpty={this.ifNotEmpty} />))}
@@ -207,15 +220,15 @@ export class PromptsView extends React.Component<PromptsViewProps, PromptsViewSt
   }
 
   renderActivity() {
-    const {activity} = this.state
-    if (!activity) {
+    const {activity, currentPage} = this.state
+    if (!activity || !currentPage) {
       return <div className="loading">Loading...</div>
     }
 
     return (
       <div className="activity">
-        {this.ifNotEmpty(activity, "name", () => <h1>{activity.name}</h1>)}
-        {this.ifNotEmpty(activity, "pages", () => activity.pages.map((page, index) => this.renderActivityPage(page, index)))}
+        {this.renderAccordian(activity)}
+        {this.renderPage(currentPage)}
       </div>
     )
   }
